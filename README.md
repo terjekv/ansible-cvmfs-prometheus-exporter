@@ -11,3 +11,7 @@ Deploy [Cern's CVMFS prometheus exporter](https://gitlab.cern.ch/cloud/cvmfs-pro
 # Role Variables
 
 None so far.
+
+# Thanks!
+
+Adapted wholesale from [Cloud Alchemy's](https://github.com/cloudalchemy) ansible roles.
