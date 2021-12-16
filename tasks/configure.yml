@@ -10,8 +10,8 @@
 
 - name: Create CMVFS exporter virtual env and install requirements
   pip: 
-    requirements: "{{ __cvmfs_virtual_env_home }}/requirements.txt"
-    virtualenv: "{{ __cvmfs_virtual_env_home }}"
+    requirements: "{{ _cvmfs_virtual_env_home }}/requirements.txt"
+    virtualenv: "{{ _cvmfs_virtual_env_home }}"
     virtualenv_python: "python3.6"
 
 - name: Copy the cvmfs_exporter systemd service file
