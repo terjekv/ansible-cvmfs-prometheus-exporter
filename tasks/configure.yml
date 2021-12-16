@@ -14,6 +14,9 @@
     virtualenv: "{{ _cvmfs_virtual_env_home }}"
     virtualenv_python: "python3.6"
 
+- name: Make virtual env usable for non-root users
+  shell: chmod a+rX -R {{ _cvmfs_virtual_env_home }}
+
 - name: Copy the cvmfs_exporter systemd service file
   template:
     src: "cvmfs_exporter.service.j2"
