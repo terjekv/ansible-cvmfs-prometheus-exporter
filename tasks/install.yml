@@ -1,0 +1,89 @@
+---
+- name: Create the node_exporter group
+  group:
+    name: "{{ _node_exporter_system_group }}"
+    state: present
+    system: true
+  when: _node_exporter_system_group != "root"
+
+- name: Create the node_exporter user
+  user:
+    name: "{{ _node_exporter_system_user }}"
+    groups: "{{ _node_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    create_home: false
+    home: /
+  when: _node_exporter_system_user != "root"
+
+- block:
+    - name: Download cvmfs_exporter script to local folder
+      become: false
+      get_url:
+        url: "{{ cvmfs_exporter_home_url}}/-/raw/master/cvmfs_exporter.py"
+        dest: "/tmp/cvmfs_exporter.py"
+        mode: '0644'
+      register: _download_script
+      until: _download_script is succeeded
+      retries: 5
+      delay: 2
+      delegate_to: localhost
+      check_mode: false
+
+    - name: Download cvmfs grafana dashboard script to local folder
+      become: false
+      get_url:
+        url: "{{ cvmfs_exporter_home_url}}/-/raw/master/grafana-dashboard.json"
+        dest: "/tmp/grafana-dashboard.json"
+        mode: '0644'
+      register: _download_json
+      until: _download_json is succeeded
+      retries: 5
+      delay: 2
+      delegate_to: localhost
+      check_mode: false
+
+    - name: Download cvmfs_exporter requirements to local folder
+      become: false
+      get_url:
+        url: "{{ cvmfs_exporter_home_url}}/-/raw/master/requirements.txt"
+        dest: "/tmp/cvmfs_exporter_requirements.txt"
+        mode: '0644'
+      register: _download_requirements
+      until: _download_requirements is succeeded
+      retries: 5
+      delay: 2
+      delegate_to: localhost
+      check_mode: false
+
+    - name: Propagate cvmfs script
+      copy:
+        src: "/tmp/cvmfs_exporter.py"
+        dest: "{{ _cvmfs_exporter_binary_install_dir }}/cvmfs_exporter.py"
+        mode: 0755
+        owner: root
+        group: root
+      notify: restart node_exporter
+      when: not ansible_check_mode
+
+    - name: Propagate cvmfs grafana dashboard
+      copy:
+        src: "/tmp/grafana-dashboard.json"
+        dest: "/var/lib/grafana/dashboards/cvmfs.json"
+        mode: 0755
+        owner: root
+        group: root
+      notify: restart grafana
+      when: not ansible_check_mode
+
+    - name: Propagate cvmfs exporter requirements
+      copy:
+        src: "/tmp/cvmfs_exporter_requirements.txt"
+        dest: "{{ _cvmfs_virtual_env_home }}/requirements.txt"
+        mode: 0755
+        owner: root
+        group: root
+      when: not ansible_check_mode
+
+  when: node_exporter_binary_local_dir | length == 0

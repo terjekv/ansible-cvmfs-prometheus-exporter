@@ -1,0 +1,30 @@
+---
+- import_tasks: install.yml
+  become: true
+  tags:
+    - cvmfs_exporter_install
+  when:
+    not _cvmfs_exporter_is_installed.stat.exists
+
+- import_tasks: selinux.yml
+  become: true
+  when: ansible_selinux.status == "enabled"
+  tags:
+    - cvmfs_exporter_configure
+
+- import_tasks: configure.yml
+  become: true
+  tags:
+    - cvmfs_exporter_configure
+
+- name: Ensure CVMFS Exporter is enabled on boot
+  become: true
+  systemd:
+    daemon_reload: true
+    name: cvmfs_exporter
+    enabled: true
+    state: started
+  when:
+    - not ansible_check_mode
+  tags:
+    - cvmfs_exporter_run
