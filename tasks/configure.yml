@@ -35,3 +35,10 @@
   when:
     - ansible_version.full is version_compare('2.4', '>=')
     - ansible_selinux.status == "enabled"
+
+- name: Set SELinux permissions on virtual environments binaries
+  sefcontext:
+    target: "{{ _cvmfs_virtual_env_home }}/python*"
+    setype: bin_t
+- name: Reload SELinux policy to ensure that ts3server is executable
+  command: restorecon -irv {{ _cvmfs_virtual_env_home }}
