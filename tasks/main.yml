@@ -3,8 +3,6 @@
   become: true
   tags:
     - cvmfs_exporter_install
-  when:
-    not _cvmfs_exporter_is_installed.stat.exists
 
 - import_tasks: selinux.yml
   become: true
