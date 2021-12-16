@@ -9,3 +9,4 @@ _cvmfs_exporter_system_group: "node-exp"
 _cvmfs_exporter_system_user: "{{ _cvmfs_exporter_system_group }}"
 
 _cvmfs_virtual_env_home: "/var/lib/virtualenvs/cvmfs_exporter_virtualenv"
+

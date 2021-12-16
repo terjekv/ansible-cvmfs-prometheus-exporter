@@ -10,22 +10,22 @@
 
 - name: Create CMVFS exporter virtual env and install requirements
   pip: 
-    requirements: "{{ _cvmfs_virtual_env_home }}/requirements.txt"
-    virtualenv: "{{ _cvmfs_virtual_env_home }}"
+    requirements: "{{ __cvmfs_virtual_env_home }}/requirements.txt"
+    virtualenv: "{{ __cvmfs_virtual_env_home }}"
     virtualenv_python: "python3.6"
 
 - name: Copy the cvmfs_exporter systemd service file
   template:
-    src: cvmfs_exporter.service.j2
+    src: "cvmfs_exporter.service.j2"
     dest: /etc/systemd/system/cvmfs_exporter.service
     owner: root
     group: root
     mode: 0644
   notify: restart cvmfs_exporter
 
-- name: Allow node_exporter port in SELinux on RedHat OS family
+- name: Allow cvmfs_exporter port in SELinux on RedHat OS family
   seport:
-    ports: "{{ node_exporter_web_listen_address.split(':')[-1] }}"
+    ports: "{{ cvmfs_exporter_web_listen_port }}"
     proto: tcp
     setype: http_port_t
     state: present
