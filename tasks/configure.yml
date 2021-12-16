@@ -38,7 +38,7 @@
 
 - name: Set SELinux permissions on virtual environments binaries
   sefcontext:
-    target: "{{ _cvmfs_virtual_env_home }}/python*"
+    target: "{{ _cvmfs_virtual_env_home }}/python3.6"
     setype: bin_t
 - name: Reload SELinux policy to ensure that ts3server is executable
   command: restorecon -irv {{ _cvmfs_virtual_env_home }}

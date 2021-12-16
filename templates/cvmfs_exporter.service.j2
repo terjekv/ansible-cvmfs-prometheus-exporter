@@ -8,7 +8,7 @@ After=network-online.target
 Type=simple
 User={{ _cvmfs_exporter_system_user }}
 Group={{ _cvmfs_exporter_system_group }}
-ExecStart={{ _cvmfs_virtual_env_home }}/bin/python \
+ExecStart={{ _cvmfs_virtual_env_home }}/bin/python3.6 \
     {{ _cvmfs_exporter_binary_install_dir }}/cvmfs_exporter.py \
     --port {{ cvmfs_exporter_web_listen_port }}
 
