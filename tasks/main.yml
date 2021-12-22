@@ -1,4 +1,7 @@
 ---
+#- name: Gather defaults
+#  include_vars: "../defaults/main.yml"
+
 - name: Gather variables for each operating system
   include_vars: "{{ item }}"
   with_first_found:
@@ -23,6 +26,9 @@
   become: true
   tags:
     - cvmfs_exporter_configure
+
+- name: Change ownership of virtual environment
+  shell: chown {{ _cvmfs_exporter_system_user }}:{{_cvmfs_exporter_system_group}} -R {{ _cvmfs_virtual_env_home }}
 
 - name: Ensure CVMFS Exporter is enabled on boot
   become: true
